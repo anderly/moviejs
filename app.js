@@ -9,17 +9,10 @@ var express = require('express')
 	, cheerio = require('cheerio')
 	, util = require('util');
 
-if (process.env.REDISTOGO_URL) {
-	var rtg   = require('url').parse(process.env.REDISTOGO_URL);
-	var redis = require('redis').createClient(rtg.port, rtg.hostname);
-
-	redis.auth(rtg.auth.split(':')[1]);
-} else {
 	var rtg   = require('url').parse('redis://redistogo:11057819af4dd82422458a5fb4803b4b@koi.redistogo.com:9484/');
 	var redis = require('redis').createClient(rtg.port, rtg.hostname);
 
 	redis.auth(rtg.auth.split(':')[1]);
-}
 
 var app = module.exports = express.createServer();
 
