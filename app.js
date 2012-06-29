@@ -45,7 +45,7 @@ app.get('/v1/title/:id', function (req, res){
 	res.contentType('application/json');
 
 	redis.get(id, function (err, reply) {
-        if (reply!='null' && reply!=null) {
+        if (reply!='null' && reply!=null && !req.query.nocache) {
         	console.log(util.format('%s found in cache', id));
         	var model = JSON.parse(reply);
         	for (var prop in model) {
@@ -61,10 +61,11 @@ app.get('/v1/title/:id', function (req, res){
 			request(url, function(err, resp, body){
 				$ = cheerio.load(body);
 
-				var titleYear = new String($('meta[property="og:title"]').attr('content')).replace(/[\r\n\(\)]/gi,'');
-				yearStart = titleYear.lastIndexOf(' ');
+				var titleYear = new String($('h1[itemprop=name]').text()).replace(/[\r\n]/gi,'');//new String($('meta[property="og:title"]').attr('content')).replace(/[\r\n\(\)]/gi,'');
+				yearStart = titleYear.indexOf('(');
+				yearEnd = titleYear.lastIndexOf(')');
 				var title = titleYear.substring(0, yearStart);
-				var year = titleYear.substring(yearStart+1);
+				var year = titleYear.substring(yearStart+1, yearEnd);
 				var mpaa_rating = new String($('div.infobar img:first').attr('alt')).replace('_','-');
 				var runtime = $('time[itemprop=duration]').text();
 				var release_date = $('time[itemprop=datePublished]').attr('datetime');
