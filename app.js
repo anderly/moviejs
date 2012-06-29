@@ -4,10 +4,22 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , request = require('request')
-  , cheerio = require('cheerio')
-  , util = require('util');
+	, routes = require('./routes')
+	, request = require('request')
+	, cheerio = require('cheerio')
+	, util = require('util');
+
+if (process.env.REDISTOGO_URL) {
+	var rtg   = require('url').parse(process.env.REDISTOGO_URL);
+	var redis = require('redis').createClient(rtg.port, rtg.hostname);
+
+	redis.auth(rtg.auth.split(':')[1]);
+} else {
+	var rtg   = require('url').parse('redis://redistogo:11057819af4dd82422458a5fb4803b4b@koi.redistogo.com:9484/');
+	var redis = require('redis').createClient(rtg.port, rtg.hostname);
+
+	redis.auth(rtg.auth.split(':')[1]);
+}
 
 var app = module.exports = express.createServer();
 
@@ -37,74 +49,86 @@ app.get('/', routes.index);
 app.get('/v1/title/:id', function (req, res){
 
 	var id = req.params.id;
-	var url = util.format('http://www.imdb.com/title/%s/', id);
 
-	request(url, function(err, resp, body){
-		$ = cheerio.load(body);
+	redis.get(id, function (err, reply) {
+        if (reply!='null') {
+        	console.log(util.format('%s found in cache', id));
+        	res.send(reply).end();
+        } else {
+        	console.log(util.format('%s not found in cache', id));
+			var url = util.format('http://www.imdb.com/title/%s/', id);
 
-		var titleYear = new String($('meta[property="og:title"]').attr('content')).replace(/[\r\n\(\)]/gi,'');
-		yearStart = titleYear.lastIndexOf(' ');
-		var title = titleYear.substring(0, yearStart);
-		var year = titleYear.substring(yearStart+1);
-		var mpaa_rating = new String($('div.infobar img:first').attr('alt')).replace('_','-');
-		var runtime = $('time[itemprop=duration]').text();
-		var release_date = $('time[itemprop=datePublished]').attr('datetime');
-		var genres = [];
-		$('a[itemprop=genre]').each(function(i, link){
-			genres.push($(link).text());
-		});
-		var metaDescription = new String($('meta[name=description]').attr('content'));
-		/*var directorStart = metaDescription.indexOf('by ') + 3;
-		var directorEnd = metaDescription.indexOf('.', directorStart);
-		var director = metaDescription.substring(directorStart, directorEnd);*/
-		var directorNode = $('a[itemprop=director]');
-		var director = directorNode.text();
-		var writers = [];
-		directorNode.parent().next().children('a').each(function (i, link) {
-			if ($(link).attr('href') != 'fullcredits#writers'){
-				writers.push($(link).text());
-			}
-		});
-		var actorStart = metaDescription.indexOf('With ') + 5;
-		var actorEnd = metaDescription.indexOf('.', actorStart);
-		var actors = metaDescription.substring(actorStart, actorEnd);
-		var plot = $('p[itemprop=description]').text().replace(/[\r\n]/gi,'');
-		var poster = $('img[itemprop=image]').attr('src');
-		var poster_data = null;
+			request(url, function(err, resp, body){
+				$ = cheerio.load(body);
 
-		var uri = url;
+				var titleYear = new String($('meta[property="og:title"]').attr('content')).replace(/[\r\n\(\)]/gi,'');
+				yearStart = titleYear.lastIndexOf(' ');
+				var title = titleYear.substring(0, yearStart);
+				var year = titleYear.substring(yearStart+1);
+				var mpaa_rating = new String($('div.infobar img:first').attr('alt')).replace('_','-');
+				var runtime = $('time[itemprop=duration]').text();
+				var release_date = $('time[itemprop=datePublished]').attr('datetime');
+				var genres = [];
+				$('a[itemprop=genre]').each(function(i, link){
+					genres.push($(link).text());
+				});
+				var metaDescription = new String($('meta[name=description]').attr('content'));
+				/*var directorStart = metaDescription.indexOf('by ') + 3;
+				var directorEnd = metaDescription.indexOf('.', directorStart);
+				var director = metaDescription.substring(directorStart, directorEnd);*/
+				var directorNode = $('a[itemprop=director]');
+				var director = directorNode.text();
+				var writers = [];
+				directorNode.parent().next().children('a').each(function (i, link) {
+					if ($(link).attr('href') != 'fullcredits#writers'){
+						writers.push($(link).text());
+					}
+				});
+				var actorStart = metaDescription.indexOf('With ') + 5;
+				var actorEnd = metaDescription.indexOf('.', actorStart);
+				var actors = metaDescription.substring(actorStart, actorEnd);
+				var plot = $('p[itemprop=description]').text().replace(/[\r\n]/gi,'');
+				var poster = $('img[itemprop=image]').attr('src');
+				var poster_data = null;
 
-		var model = {
-				id: id
-				,title: title
-				,year: year
-				,mpaa_rating: mpaa_rating
-				,release_date: release_date
-				,runtime: runtime
-				,genre: genres.join(', ')
-				,director: director
-				,writer: writers.join(', ')
-				,actors: actors
-				,plot: plot
-				,poster: poster
-			};
+				var uri = url;
 
-		if (req.query.embed_poster) {
-			request({uri: poster, encoding: 'binary'}, function(err, resp, body) {
-				if (!err && resp.statusCode == 200) {
-		        	//data_uri_prefix = "data:" + response.headers["content-type"] + ";base64,"
-		        	poster_data = new Buffer(body.toString(), "binary").toString("base64");
-		        	//image = data_uri_prefix + image
-		        	model.poster_data = poster_data;
-		        	model.uri = url;
-		        	res.send(model).end();
-		    	}
+				var model = {
+						id: id
+						,title: title
+						,year: year
+						,mpaa_rating: mpaa_rating
+						,release_date: release_date
+						,runtime: runtime
+						,genre: genres.join(', ')
+						,director: director
+						,writer: writers.join(', ')
+						,actors: actors
+						,plot: plot
+						,poster: poster
+					};
+
+				if (req.query.embed_poster) {
+					request({uri: poster, encoding: 'binary'}, function(err, resp, body) {
+						if (!err && resp.statusCode == 200) {
+				        	//data_uri_prefix = "data:" + response.headers["content-type"] + ";base64,"
+				        	poster_data = new Buffer(body.toString(), "binary").toString("base64");
+				        	//image = data_uri_prefix + image
+				        	model.poster_data = poster_data;
+				        	model.uri = url;
+				        	redis.set(id, JSON.stringify(model));
+				        	res.send(model).end();
+				    	}
+					});
+				} else {
+					model.uri = url;
+					redis.set(id, JSON.stringify(model));
+					res.send(model).end();
+				}
 			});
-		} else {
-			model.uri = url;
-			res.send(model).end();
-		}
-	});
+        }
+        //redis.quit();
+    });
 });
 
 app.listen(process.env.PORT || 3000);
