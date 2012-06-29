@@ -44,7 +44,7 @@ app.get('/v1/title/:id', function (req, res){
 	var id = req.params.id;
 
 	redis.get(id, function (err, reply) {
-        if (reply!='null') {
+        if (reply!='null' && reply!=null) {
         	console.log(util.format('%s found in cache', id));
         	res.send(reply).end();
         } else {
