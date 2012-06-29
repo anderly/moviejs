@@ -1,9 +1,10 @@
 {
-    "name": "moviejs"
+  "name": "moviejs"
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": ">= 2.5.11"
+    "express": ">= 2.5.11"
+    , "stache": ">=0.1.0"
     , "crypto": ">= 0.0.3"
     , "stache": ">= 0.1.0"
     , "cheerio": ">= 0.8.3"
@@ -12,7 +13,7 @@
     , "url": ">= 0.7.9"
   },
   "engines": {
-    "node": "0.8.1",
-    "npm":  "1.1.9"
+  "node": "0.8.1",
+  "npm":  "1.1.9"
   }
 }

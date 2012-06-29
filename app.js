@@ -7,7 +7,9 @@ var express = require('express')
 	, routes = require('./routes')
 	, request = require('request')
 	, cheerio = require('cheerio')
-	, util = require('util');
+	, util = require('util')
+	, stache = require('stache')
+	, system = require('./system');
 
 	var rtg   = require('url').parse('redis://redistogo:11057819af4dd82422458a5fb4803b4b@koi.redistogo.com:9484/');
 	var redis = require('redis').createClient(rtg.port, rtg.hostname);
@@ -18,13 +20,24 @@ var app = module.exports = express.createServer();
 
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+// app.configure(function(){
+//   app.set('views', __dirname + '/views');
+//   app.set('view engine', 'jade');
+//   app.use(express.bodyParser());
+//   app.use(express.methodOverride());
+//   app.use(app.router);
+//   app.use(express.static(__dirname + '/public'));
+// });
+// Configuration
+app.configure(function() {
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'mustache');
+	app.register('.mustache', stache);
+	//app.use(express.logger());
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use('/assets',express.static(__dirname + '/assets'));
+	app.use(app.router);
 });
 
 app.configure('development', function(){
@@ -36,26 +49,6 @@ app.configure('production', function(){
 });
 
 // Routes
-
-// Removes whitespace characters from end of the string
-String.prototype.lTrim = function()
-{
-	return this.replace(/^\s*/,"");
-}
-
-// Removes whitespace characters from end of the string
-String.prototype.rTrim = function()
-{
-	return this.replace(/\s*$/,"");
-}
-
-// Equivalent to VBScript Trim()
-// - removes whitespace characters from the beginning and end of the string
-String.prototype.trim = function()
-{
-	return this.rTrim().lTrim();
-}
-
 app.get('/', routes.index);
 
 app.get('/v1/title/:id', function (req, res){
