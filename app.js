@@ -37,6 +37,25 @@ app.configure('production', function(){
 
 // Routes
 
+// Removes whitespace characters from end of the string
+String.prototype.lTrim = function()
+{
+	return this.replace(/^\s*/,"");
+}
+
+// Removes whitespace characters from end of the string
+String.prototype.rTrim = function()
+{
+	return this.replace(/\s*$/,"");
+}
+
+// Equivalent to VBScript Trim()
+// - removes whitespace characters from the beginning and end of the string
+String.prototype.trim = function()
+{
+	return this.rTrim().lTrim();
+}
+
 app.get('/', routes.index);
 
 app.get('/v1/title/:id', function (req, res){
@@ -80,18 +99,18 @@ app.get('/v1/title/:id', function (req, res){
 				var directorNode = $('a[itemprop=director]');
 				var director = directorNode.text();
 				var writers = [];
-				var writerNode = directorNode.parent().next();
-				/*if (writerNode.children('h4').text().contains('Writers')) {
+				var writerNode = directorNode.parent().next()
+				if (writerNode.children('h4:first').text().replace(/[\r\n\s]/gi,'') == 'Writers:') {
 					writerNode.children('a').each(function (i, link) {
 						if ($(link).attr('href') != 'fullcredits#writers'){
 							writers.push($(link).text());
 						}
 					});
-				}*/
+				}
 				var actorStart = metaDescription.indexOf('With ') + 5;
 				var actorEnd = metaDescription.indexOf('.', actorStart);
 				var actors = metaDescription.substring(actorStart, actorEnd);
-				var plot = $('p[itemprop=description]').text().replace(/[\r\n]/gi,'');
+				var plot = new String($('p[itemprop=description]').text().replace(/[\r\n]/gi,'')).trim();
 				var poster = $('img[itemprop=image]').attr('src');
 				var poster_data = null;
 
