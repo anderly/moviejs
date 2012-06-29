@@ -47,7 +47,13 @@ app.get('/v1/title/:id', function (req, res){
 	redis.get(id, function (err, reply) {
         if (reply!='null' && reply!=null) {
         	console.log(util.format('%s found in cache', id));
-        	res.send(reply).end();
+        	var model = JSON.parse(reply);
+        	for (var prop in model) {
+        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
+					model[prop] = 'N/A';
+				}
+        	}
+        	res.send(model).end();
         } else {
         	console.log(util.format('%s not found in cache', id));
 			var url = util.format('http://www.imdb.com/title/%s/', id);
@@ -110,12 +116,22 @@ app.get('/v1/title/:id', function (req, res){
 				        	//image = data_uri_prefix + image
 				        	model.poster_data = poster_data;
 				        	model.uri = url;
+				        	for (var prop in model) {
+				        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
+									model[prop] = 'N/A';
+								}
+				        	}
 				        	redis.set(id, JSON.stringify(model));
 				        	res.send(model).end();
 				    	}
 					});
 				} else {
 					model.uri = url;
+					for (var prop in model) {
+		        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
+							model[prop] = 'N/A';
+						}
+		        	}
 					redis.set(id, JSON.stringify(model));
 					res.send(model).end();
 				}
