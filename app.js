@@ -42,6 +42,7 @@ app.get('/', routes.index);
 app.get('/v1/title/:id', function (req, res){
 
 	var id = req.params.id;
+	res.contentType('application/json');
 
 	redis.get(id, function (err, reply) {
         if (reply!='null' && reply!=null) {
