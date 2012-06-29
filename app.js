@@ -80,11 +80,14 @@ app.get('/v1/title/:id', function (req, res){
 				var directorNode = $('a[itemprop=director]');
 				var director = directorNode.text();
 				var writers = [];
-				directorNode.parent().next().children('a').each(function (i, link) {
-					if ($(link).attr('href') != 'fullcredits#writers'){
-						writers.push($(link).text());
-					}
-				});
+				var writerNode = directorNode.parent().next();
+				/*if (writerNode.children('h4').text().contains('Writers')) {
+					writerNode.children('a').each(function (i, link) {
+						if ($(link).attr('href') != 'fullcredits#writers'){
+							writers.push($(link).text());
+						}
+					});
+				}*/
 				var actorStart = metaDescription.indexOf('With ') + 5;
 				var actorEnd = metaDescription.indexOf('.', actorStart);
 				var actors = metaDescription.substring(actorStart, actorEnd);
