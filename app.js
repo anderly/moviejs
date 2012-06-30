@@ -3,18 +3,12 @@
  * Module dependencies.
  */
 
-var express = require('express')
-	, routes = require('./routes')
-	, request = require('request')
-	, cheerio = require('cheerio')
-	, util = require('util')
-	, stache = require('stache')
-	, system = require('./system');
-
-	var rtg   = require('url').parse('redis://redistogo:11057819af4dd82422458a5fb4803b4b@koi.redistogo.com:9484/');
-	var redis = require('redis').createClient(rtg.port, rtg.hostname);
-
-	redis.auth(rtg.auth.split(':')[1]);
+var express = require('express');
+var routes = require('./routes');	
+var util = require('util');
+var stache = require('stache');
+var system = require('./system');
+var imdb = require('./lib/imdb');
 
 var app = module.exports = express.createServer();
 
@@ -53,108 +47,11 @@ app.get('/', routes.index);
 
 app.get('/v1/title/:id', function (req, res){
 
-	var id = req.params.id;
 	res.contentType('application/json');
 
-	redis.get(id, function (err, reply) {
-        if (reply!='null' && reply!=null && !req.query.nocache) {
-        	console.log(util.format('%s found in cache', id));
-        	var model = JSON.parse(reply);
-        	for (var prop in model) {
-        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
-					model[prop] = 'N/A';
-				}
-        	}
-        	res.send(model).end();
-        } else {
-        	console.log(util.format('%s not found in cache', id));
-			var url = util.format('http://www.imdb.com/title/%s/', id);
-
-			request(url, function(err, resp, body){
-				$ = cheerio.load(body);
-
-				var titleYear = new String($('h1[itemprop=name]').text()).replace(/[\r\n]/gi,'');//new String($('meta[property="og:title"]').attr('content')).replace(/[\r\n\(\)]/gi,'');
-				yearStart = titleYear.indexOf('(');
-				yearEnd = titleYear.lastIndexOf(')');
-				var title = titleYear.substring(0, yearStart);
-				var year = titleYear.substring(yearStart+1, yearEnd);
-				var mpaa_rating = new String($('div.infobar img:first').attr('alt')).replace('_','-');
-				var runtime = $('time[itemprop=duration]').text();
-				var release_date = $('time[itemprop=datePublished]').attr('datetime');
-				var genres = [];
-				$('a[itemprop=genre]').each(function(i, link){
-					genres.push($(link).text());
-				});
-				var metaDescription = new String($('meta[name=description]').attr('content'));
-				/*var directorStart = metaDescription.indexOf('by ') + 3;
-				var directorEnd = metaDescription.indexOf('.', directorStart);
-				var director = metaDescription.substring(directorStart, directorEnd);*/
-				var directorNode = $('a[itemprop=director]');
-				var director = directorNode.text();
-				var writers = [];
-				var writerNode = directorNode.parent().next()
-				if (writerNode.children('h4:first').text().replace(/[\r\n\s]/gi,'') == 'Writers:') {
-					writerNode.children('a').each(function (i, link) {
-						if ($(link).attr('href') != 'fullcredits#writers'){
-							writers.push($(link).text());
-						}
-					});
-				}
-				var actorStart = metaDescription.indexOf('With ') + 5;
-				var actorEnd = metaDescription.indexOf('.', actorStart);
-				var actors = metaDescription.substring(actorStart, actorEnd);
-				var plot = new String($('p[itemprop=description]').text().replace(/[\r\n]/gi,'')).trim();
-				var poster = $('img[itemprop=image]').attr('src');
-				var poster_data = null;
-
-				var uri = url;
-
-				var model = {
-						id: id
-						,title: title
-						,year: year
-						,mpaa_rating: mpaa_rating
-						,release_date: release_date
-						,runtime: runtime
-						,genre: genres.join(', ')
-						,director: director
-						,writer: writers.join(', ')
-						,actors: actors
-						,plot: plot
-						,poster: poster
-					};
-
-				if (req.query.embed_poster) {
-					request({uri: poster, encoding: 'binary'}, function(err, resp, body) {
-						if (!err && resp.statusCode == 200) {
-				        	//data_uri_prefix = "data:" + response.headers["content-type"] + ";base64,"
-				        	poster_data = new Buffer(body.toString(), "binary").toString("base64");
-				        	//image = data_uri_prefix + image
-				        	model.poster_data = poster_data;
-				        	model.uri = url;
-				        	for (var prop in model) {
-				        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
-									model[prop] = 'N/A';
-								}
-				        	}
-				        	redis.set(id, JSON.stringify(model));
-				        	res.send(model).end();
-				    	}
-					});
-				} else {
-					model.uri = url;
-					for (var prop in model) {
-		        		if ( typeof model[prop] == 'undefined' || model[prop] == 'undefined' || model[prop] == null || model[prop] == '' ) {
-							model[prop] = 'N/A';
-						}
-		        	}
-					redis.set(id, JSON.stringify(model));
-					res.send(model).end();
-				}
-			});
-        }
-        //redis.quit();
-    });
+	imdb.findById(req, function(movie){
+		res.send(movie).end();
+	})
 });
 
 app.listen(process.env.PORT || 3000);
