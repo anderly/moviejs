@@ -80,7 +80,7 @@ app.get('/v1/titles/:id', function (req, res, next){
 	});
 });
 
-app.get('/v1/titles/', function (req, res, next){
+app.get('/v1/titles', function (req, res, next){
 	res.contentType('application/json');
 	if (req.query.search) {
     	imdb.search(req.query.search, function(err, results){
