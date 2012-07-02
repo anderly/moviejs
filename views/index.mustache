@@ -1,20 +1,33 @@
-<!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
-<h1>MovieJS (beta)</h1>
+<h1>MovieJS</h1>
 <p>An IMDB-backed movie api written in node.js</p>
-<p><a class="btn btn-success btn-large" href="/v1/title/tt1345836">Try It Now</a></p>
+<p><a class="btn btn-success btn-large" href="/v1/titles/tt1345836">Try It Now</a></p>
 </div>
 
 <div class="row">
-<div class="span12">
+<div class="span4">
+	<h2>About</h2>
+	<p>
+	MovieJS is an experimental movie api built on top of <a href="http://nodejs.org">Node.js</a> and <a href="http://expressjs.com/">Express</a>. It features fast searching of IMDB by title id or keyword with a Redis-backed sliding cache. JSON is currently the only supported response format. Future plans may include actor, showtime info as well as movie info from additional sources besides IMDB.
+	</p>
+</div>
+<div class="span4">
 	<h2>Resources</h2>
 	<p>
 	<ul>
-		<li><strong>Title</strong>: /v1/title/:id (where id is IMDB title id) example: <a href="/v1/title/tt1345836">The Dark Knight Rises</a></li>	
+		<li><strong>Titles</strong>: /v1/titles/:id (where id is IMDB title id) example: <a href="/v1/titles/tt1345836">The Dark Knight Rises</a></li>
+		<li><strong>Titles (search)</strong>: /v1/titles/?search=:term (where term is a keyword or phrase) example: <a href="/v1/titles/?search=katy+perry">Search for "katy perry"</a></li>
+	</ul>
+	</p>
+</div>
+<div class="span4">
+	<h2>Community</h2>
+	<p>
+	<ul>
+		<li><strong>Planned:</strong> Node.js api-wrapper module</li>	
 	</ul>
 	</p>
 </div>
 </div>
-
 <hr>
     
