@@ -75,7 +75,7 @@ app.get('/v1/titles/:id', function (req, res, next){
 		if (!err) {
 			return res.send(product);
 		} else {
-			return console.log(err);
+			return next(err);
 		}
 	});
 });
@@ -87,7 +87,7 @@ app.get('/v1/titles', function (req, res, next){
 			if (!err) {
 				return res.send(results);
 			} else {
-				return console.log(err);
+				return next(err);
 			}
 		})
     } else {
