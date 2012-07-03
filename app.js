@@ -25,6 +25,7 @@ var app = module.exports = express.createServer();
 app.configure(function() {
 	app.use(function (req, res, next) {
 		res.removeHeader("X-Powered-By");
+		res.removeHeader("Server");
 		next();
 	});
 	app.set('views', __dirname + '/views');
