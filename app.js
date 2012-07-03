@@ -23,6 +23,10 @@ var app = module.exports = express.createServer();
 // });
 // Configuration
 app.configure(function() {
+	app.use(function (req, res, next) {
+		res.removeHeader("X-Powered-By");
+		next();
+	});
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'mustache');
 	app.register('.mustache', stache);
@@ -71,9 +75,9 @@ app.get('/', routes.index);
 
 app.get('/v1/titles/:id', function (req, res, next){
 	res.contentType('application/json');
-	return imdb.findById(req.params.id, function (err, product) {
+	return imdb.findById(req.params.id, function (err, movie) {
 		if (!err) {
-			return res.send(product);
+			return res.send(movie);
 		} else {
 			return next(err);
 		}
