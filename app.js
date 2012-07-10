@@ -24,7 +24,7 @@ var app = module.exports = express.createServer();
 // Configuration
 app.configure(function() {
 	app.use(function (req, res, next) {
-		res.addHeader("Access-Control-Allow-Origin","*")
+		res.header("Access-Control-Allow-Origin", "*");
 		res.removeHeader("X-Powered-By");
 		res.removeHeader("Server");
 		next();
