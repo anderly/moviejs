@@ -76,8 +76,6 @@ app.configure('production', function(){
 // Routes
 app.get('/', routes.index);
 
-app.options('/v1/titles')
-
 app.get('/v1/titles/:id', function (req, res, next){
 	res.contentType('application/json');
 	return imdb.findById(req.params.id, function (err, movie) {
