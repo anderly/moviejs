@@ -25,6 +25,7 @@ var app = module.exports = express.createServer();
 app.configure(function() {
 	app.use(function (req, res, next) {
 		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "X-Requested-With");
 		res.removeHeader("X-Powered-By");
 		res.removeHeader("Server");
 		next();
@@ -74,6 +75,8 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
+
+app.options('/v1/titles')
 
 app.get('/v1/titles/:id', function (req, res, next){
 	res.contentType('application/json');
