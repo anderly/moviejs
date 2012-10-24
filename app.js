@@ -6,7 +6,6 @@
 var express = require('express');
 var routes = require('./routes');	
 var util = require('util');
-var stache = require('stache');
 var system = require('./system');
 var imdb = require('./lib/imdb');
 var engines = require('consolidate');
