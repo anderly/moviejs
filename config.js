@@ -1,3 +1,3 @@
 module.exports = {
-	"connectionString" : process.env.coonectionString
+	"connectionString" : process.env.connectionString
 }
