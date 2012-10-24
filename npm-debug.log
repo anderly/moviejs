@@ -1,0 +1,95 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.1.63
+3 info using node@v0.8.12
+4 verbose read json /Users/adam/Dropbox/@Git/moviejs/package.json
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ '/Users/adam/Dropbox/@Git/moviejs',
+6 verbose install   [ 'express',
+6 verbose install     'stache',
+6 verbose install     'crypto',
+6 verbose install     'mustache',
+6 verbose install     'hogan',
+6 verbose install     'cheerio',
+6 verbose install     'request',
+6 verbose install     'redis',
+6 verbose install     'url',
+6 verbose install     'underscore',
+6 verbose install     'consolidate' ] ]
+7 verbose from cache /Users/adam/Dropbox/@Git/moviejs/package.json
+8 info preinstall moviejs@0.0.1
+9 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/cheerio/package.json
+10 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/connect-mongodb/package.json
+11 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/consolidate/package.json
+12 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/crypto/package.json
+13 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/express/package.json
+14 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/mustache/package.json
+15 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/nodeload/package.json
+16 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/redis/package.json
+17 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/request/package.json
+18 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/stache/package.json
+19 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/underscore/package.json
+20 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/url/package.json
+21 warn package.json url@0.7.9 No README.md file found!
+22 verbose from cache /Users/adam/Dropbox/@Git/moviejs/package.json
+23 verbose readDependencies using package.json deps
+24 verbose read json /Users/adam/Dropbox/@Git/moviejs/node_modules/.bin/package.json
+25 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/cheerio/package.json
+26 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/connect-mongodb/package.json
+27 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/consolidate/package.json
+28 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/crypto/package.json
+29 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/express/package.json
+30 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/mustache/package.json
+31 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/nodeload/package.json
+32 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/redis/package.json
+33 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/request/package.json
+34 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/stache/package.json
+35 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/underscore/package.json
+36 verbose from cache /Users/adam/Dropbox/@Git/moviejs/node_modules/url/package.json
+37 verbose already installed skipping mustache@>= 0.1.0 /Users/adam/Dropbox/@Git/moviejs
+38 verbose cache add [ 'hogan@=>0.x', null ]
+39 silly cache add name=undefined spec="hogan@=>0.x" args=["hogan@=>0.x",null]
+40 verbose parsed url { pathname: 'hogan@=%3E0.x',
+40 verbose parsed url   path: 'hogan@=%3E0.x',
+40 verbose parsed url   href: 'hogan@=%3E0.x' }
+41 silly cache add name="hogan" spec="=>0.x" args=["hogan","=>0.x"]
+42 verbose parsed url { pathname: '=%3E0.x', path: '=%3E0.x', href: '=%3E0.x' }
+43 verbose addNamed [ 'hogan', '=>0.x' ]
+44 verbose addNamed [ null, null ]
+45 verbose already installed skipping cheerio@>= 0.8.3 /Users/adam/Dropbox/@Git/moviejs
+46 silly lockFile 996514a9-hogan-0-x hogan@=>0.x
+47 verbose lock hogan@=>0.x /Users/adam/.npm/996514a9-hogan-0-x.lock
+48 verbose already installed skipping request@>= 2.9.203 /Users/adam/Dropbox/@Git/moviejs
+49 info addNameTag [ 'hogan', '=>0.x' ]
+50 verbose url raw hogan
+51 verbose url resolving [ 'https://registry.npmjs.org/', './hogan' ]
+52 verbose url resolved https://registry.npmjs.org/hogan
+53 info trying registry request attempt 1 at 22:48:01
+54 http GET https://registry.npmjs.org/hogan
+55 verbose already installed skipping redis@>= 0.7.2 /Users/adam/Dropbox/@Git/moviejs
+56 verbose already installed skipping url@>= 0.7.9 /Users/adam/Dropbox/@Git/moviejs
+57 verbose already installed skipping underscore@>=1.3.3 /Users/adam/Dropbox/@Git/moviejs
+58 verbose already installed skipping consolidate@>=0.0.0 /Users/adam/Dropbox/@Git/moviejs
+59 verbose already installed skipping express@>= 3.x /Users/adam/Dropbox/@Git/moviejs
+60 verbose already installed skipping stache@>=0.1.0 /Users/adam/Dropbox/@Git/moviejs
+61 verbose already installed skipping crypto@>= 0.0.3 /Users/adam/Dropbox/@Git/moviejs
+62 http 404 https://registry.npmjs.org/hogan
+63 silly registry.get cb [ 404,
+63 silly registry.get   { server: 'CouchDB/1.2.0 (Erlang OTP/R15B)',
+63 silly registry.get     date: 'Wed, 24 Oct 2012 03:47:56 GMT',
+63 silly registry.get     'content-type': 'application/json',
+63 silly registry.get     'content-length': '52',
+63 silly registry.get     'cache-control': 'must-revalidate' } ]
+64 silly lockFile 996514a9-hogan-0-x hogan@=>0.x
+65 error 404 'hogan' is not in the npm registry.
+65 error 404 You should bug the author to publish it
+65 error 404
+65 error 404 Note that you can also install from a
+65 error 404 tarball, folder, or http url, or git url.
+66 error System Darwin 12.2.0
+67 error command "node" "/usr/local/bin/npm" "install"
+68 error cwd /Users/adam/Dropbox/@Git/moviejs
+69 error node -v v0.8.12
+70 error npm -v 1.1.63
+71 error code E404
+72 verbose exit [ 1, true ]

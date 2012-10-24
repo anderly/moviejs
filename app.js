@@ -9,8 +9,10 @@ var util = require('util');
 var stache = require('stache');
 var system = require('./system');
 var imdb = require('./lib/imdb');
+var engines = require('consolidate');
 
-var app = module.exports = express.createServer();
+var app = express();
+app.engine('mustache', engines.mustache);
 // Configuration
 
 // app.configure(function(){
@@ -22,7 +24,7 @@ var app = module.exports = express.createServer();
 //   app.use(express.static(__dirname + '/public'));
 // });
 // Configuration
-app.configure(function() {
+//app.configure(function() {
 	app.use(function (req, res, next) {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -32,7 +34,6 @@ app.configure(function() {
 	});
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'mustache');
-	app.register('.mustache', stache);
 	//app.use(express.logger());
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
@@ -63,7 +64,7 @@ app.configure(function() {
 			res.send({ statusCode: new String(err.status), message: new String(err.message) });
 		}
 	});
-});
+//});
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
@@ -105,4 +106,4 @@ app.get('/v1/titles', function (req, res, next){
 });
 
 app.listen(process.env.PORT || 3000);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+//console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
