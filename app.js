@@ -12,7 +12,15 @@ var imdb = require('./lib/imdb');
 var engines = require('consolidate');
 
 var app = express();
-app.engine('mustache', engines.mustache);
+app.engine('html', engines.hogan);
+
+// set .html as the default extension 
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+
+app.set('layout', 'layout'); //# rendering by default
+app.enable('view cache');
+app.engine('html', require('hogan-express'));
 // Configuration
 
 // app.configure(function(){
@@ -32,11 +40,9 @@ app.engine('mustache', engines.mustache);
 		res.removeHeader("Server");
 		next();
 	});
-	app.set('views', __dirname + '/views');
-	app.set('view engine', 'mustache');
 	//app.use(express.logger());
-	app.use(express.bodyParser());
-	app.use(express.methodOverride());
+	//app.use(express.bodyParser());
+	//app.use(express.methodOverride());
 	app.use('/assets',express.static(__dirname + '/assets'));
 	app.use('/v1', function(req, res, next){
 		imdb.req = req;
