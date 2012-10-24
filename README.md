@@ -14,6 +14,10 @@ We do not replicate/persist IMDB data but instead simply cache API query results
 
 This is very much a work in progress and I'm considering adding other movie-info sources (other than IMDB) should the need or demand arise.
 
+### Base Uri
+
+- http://api.moviejs.com
+
 ### Resources
 
 - Titles: /v1/titles/:id (where id is IMDB title id) example: [The Dark Knight Rises][2]
@@ -22,5 +26,5 @@ This is very much a work in progress and I'm considering adding other movie-info
 
 [0]:http://www.imdb.com
 [1]:https://github.com/MatthewMueller/cheerio
-[2]:http://www.moviejs.com/v1/titles/tt1345836
-[3]:http://www.moviejs.com/v1/titles/?search=katy+perry
+[2]:http://api.moviejs.com/v1/titles/tt1345836
+[3]:http://api.moviejs.com/v1/titles/?search=katy+perry
