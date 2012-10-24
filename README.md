@@ -10,12 +10,15 @@ We leverage [cheerio][1] (the excellent jQuery-esque node module) for some nice 
 
 We do not replicate/persist IMDB data but instead simply cache API query results in Redis using a sliding expiration to avoid uncessary overhead calling IMDB.
 
+
+
 This is very much a work in progress and I'm considering adding other movie-info sources (other than IMDB) should the need or demand arise.
 
 ### Resources
 
-##Titles: /v1/titles/:id (where id is IMDB title id) example: [The Dark Knight Rises][2]
-##Titles (search): /v1/titles/?search=:term (where term is a keyword or phrase) example: [Search for "katy perry"][3]
+- Titles: /v1/titles/:id (where id is IMDB title id) example: [The Dark Knight Rises][2]
+- Titles (search):
+/v1/titles/?search=:term (where term is a keyword or phrase) example: [Search for "katy perry"][3]
 
 [0]:http://www.imdb.com
 [1]:https://github.com/MatthewMueller/cheerio
