@@ -21,56 +21,37 @@ app.set('views', __dirname + '/views');
 app.set('layout', 'layout'); //# rendering by default
 app.enable('view cache');
 app.engine('html', require('hogan-express'));
-// Configuration
 
-// app.configure(function(){
-//   app.set('views', __dirname + '/views');
-//   app.set('view engine', 'jade');
-//   app.use(express.bodyParser());
-//   app.use(express.methodOverride());
-//   app.use(app.router);
-//   app.use(express.static(__dirname + '/public'));
-// });
 // Configuration
-//app.configure(function() {
-	app.use(function (req, res, next) {
-		res.header("Access-Control-Allow-Origin", "*");
-		res.header("Access-Control-Allow-Headers", "X-Requested-With");
-		res.removeHeader("X-Powered-By");
-		res.removeHeader("Server");
-		next();
-	});
-	//app.use(express.logger());
-	//app.use(express.bodyParser());
-	//app.use(express.methodOverride());
-	app.use('/assets',express.static(__dirname + '/assets'));
-	app.use('/v1', function(req, res, next){
-		imdb.req = req;
-		imdb.res = res;
-		console.log('set req and res on imdb');
-		next();
-	})
-	app.use(app.router);
-	// error handling middleware. Because it's
-	// below our routes, you will be able to
-	// "intercept" errors, otherwise Connect
-	// will respond with 500 "Internal Server Error".
-	app.use(function(err, req, res, next){
-		// res.contentType('application/json');
-		// // special-case 404s,
-		// // remember you could
-		// // render a 404 template here
-		// if (404 == err.status) {
-		// 	res.statusCode = 404;
-		// 	res.send({ statusCode: 400, message: "Please provide a title id (/titles/:id) or a search term (?search=:term)" });
-		// } else {
-		if (err.message) {
-		 	//res.send(err);
-		 	res.statusCode = err.status;
-			res.send({ statusCode: new String(err.status), message: new String(err.message) });
-		}
-	});
-//});
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	res.removeHeader("X-Powered-By");
+	res.removeHeader("Server");
+	next();
+});
+//app.use(express.logger());
+//app.use(express.bodyParser());
+//app.use(express.methodOverride());
+app.use('/assets',express.static(__dirname + '/assets'));
+app.use('/v1', function(req, res, next){
+	imdb.req = req;
+	imdb.res = res;
+	console.log('set req and res on imdb');
+	next();
+})
+app.use(app.router);
+// error handling middleware. Because it's
+// below our routes, you will be able to
+// "intercept" errors, otherwise Connect
+// will respond with 500 "Internal Server Error".
+app.use(function(err, req, res, next){
+	if (err.message) {
+	 	//res.send(err);
+	 	res.statusCode = err.status;
+		res.send({ statusCode: new String(err.status), message: new String(err.message) });
+	}
+});
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
